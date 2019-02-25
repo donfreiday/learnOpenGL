@@ -246,7 +246,9 @@ int main(int argc, char **argv) {
     glfwPollEvents();
   }
 
-  // glfwDestroyWindow(window);
+  glfwDestroyWindow(window);
+
+  glDeleteProgram(shader);
 
   // This destroys any remaining windows and releases any other resources
   // allocated by GLFW.
