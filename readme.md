@@ -67,6 +67,22 @@ gcc -lglfw -lGLEW -lGLU -lGL modern-opengl-with-glew.cpp -o bin/a.out && bin/a.o
 #include <GLFW/glfw3.h>
 ```
 
-***
-
 ### 03 - Vertex Buffers and Drawing a Triangle
+[docs.gl](http://docs.gl) is one of the best OpenGL references out there, and you should read up on any functions used.
+
+#### Notes
+ OpenGL is a state machine, and every object created is assigned an integer ID, which is used to reference that resource. 
+
+A **vertex buffer** is a memory buffer in VRAM. A  **shader** is a program that runs on the GPU and tells it how to use the data in the  vertex buffer. We bind states and then issue a **draw call** to have our GPU draw this to the screen.
+
+The **Rendering pipeline** call order, simplified: Draw call ->  Vertex shaders  -> fragment (aka pixel) shaders.
+
+High level overview for **shaders**: vertex shaders determine position of vertices, fragment shaders determine the color of individual pixers.
+
+**Vertex shaders** are called once for each vertex, taking in all vertex attributes specified in our buffer. Shaders can receive data from the CPU (uniforms).
+
+**Fragment shaders** run once for each pixel which needs to be rasterized (drawn to screen) - rasterization is 'filling in' the triangles defined by our vertex shader. It's primary purpose is applying color. They run many more times than vertex shaders, they are 'more expensive' in terms of performance. Data can be passed from vertex shaders to fragment shaders.
+
+
+
+A **vertex** is not just a position; it can hold much more data: texture coordinates, normals, colors, binormals, etc.
