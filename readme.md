@@ -1,7 +1,7 @@
 # Learn OpenGL
 
-This project is based on the  OpenGL tutorial series [here](https://www.youtube.com/watch?v=OR4fNpBjmq8). The platform is Arch Linux, rather than Windows.
-
+This project is based on the  OpenGL tutorial series [here](https://www.youtube.com/watch?v=OR4fNpBjmq8). The platform is Arch Linux and the IDE used is VS Code, rather than Windows and Visual Studio.
+[docs.gl](http://docs.gl) is one of the best OpenGL references out there, and you should read up on any functions used.
 The readme is a companion for the accompanying source files, and as such omits many details.
 
 ***
@@ -33,7 +33,7 @@ This is rendered with legacy OpenGL; see commented source.
 
 #### Compilation
 ```bash
-gcc -lglfw -lGL window-and-triangle.cpp -o bin/a.out && bin/a.out
+g++ -lglfw -lGL window-and-triangle.cpp -o bin/a.out && bin/a.out
 ```
 
 #### Notes 
@@ -54,7 +54,7 @@ yay -Syu glew
 #### Compilation
 
 ```bash
-gcc -lglfw -lGLEW -lGLU -lGL modern-opengl-with-glew.cpp -o bin/a.out && bin/a.out
+g++ -lglfw -lGLEW -lGLU -lGL modern-opengl-with-glew.cpp -o bin/a.out && bin/a.out
 ```
 
 #### Notes
@@ -68,8 +68,6 @@ gcc -lglfw -lGLEW -lGLU -lGL modern-opengl-with-glew.cpp -o bin/a.out && bin/a.o
 ```
 
 ### 03 - Vertex Buffers and Drawing a Triangle
-[docs.gl](http://docs.gl) is one of the best OpenGL references out there, and you should read up on any functions used.
-
 #### Notes
  OpenGL is a state machine, and every object created is assigned an integer ID, which is used to reference that resource. 
 
