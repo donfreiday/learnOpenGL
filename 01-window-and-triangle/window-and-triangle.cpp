@@ -1,5 +1,5 @@
 /* Todo: use CMake. In the meantime:
- * gcc -lglfw -lGL window-and-triangle.cpp -o bin/a.out && bin/a.out */
+ * g++ -lglfw -lGL window-and-triangle.cpp -o bin/a.out && bin/a.out */
 
 #include <GLFW/glfw3.h>
 #include <stdio.h>
