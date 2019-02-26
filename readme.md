@@ -68,6 +68,8 @@ g++ -lglfw -lGLEW -lGLU -lGL modern-opengl-with-glew.cpp -o bin/a.out && bin/a.o
 ```
 
 ### 03 - Vertex Buffers and Drawing a Triangle
+This lesson covers the extensive boilerplate required to render a triangle using modern OpenGL.
+
 #### Notes
  OpenGL is a state machine, and every object created is assigned an integer ID, which is used to reference that resource. 
 
@@ -81,6 +83,7 @@ High level overview for **shaders**: vertex shaders determine position of vertic
 
 **Fragment shaders** run once for each pixel which needs to be rasterized (drawn to screen) - rasterization is 'filling in' the triangles defined by our vertex shader. It's primary purpose is applying color. They run many more times than vertex shaders, they are 'more expensive' in terms of performance. Data can be passed from vertex shaders to fragment shaders.
 
-
-
 A **vertex** is not just a position; it can hold much more data: texture coordinates, normals, colors, binormals, etc.
+
+### 04 - Dealing with Shaders
+In  lesson 4 we separate our vertex and fragment shader code into files. While we're reusing the code from lesson 3, some of the extensive code comments have been removed.
