@@ -51,7 +51,7 @@ An [OpenGL context](https://www.khronos.org/opengl/wiki/OpenGL_Context) represen
 yay -Syu glew
 ```
 
-#### Compilation
+#### Compilation 
 
 ```bash
 g++ -lglfw -lGLEW -lGLU -lGL modern-opengl-with-glew.cpp -o bin/a.out && bin/a.out
@@ -66,6 +66,8 @@ g++ -lglfw -lGLEW -lGLU -lGL modern-opengl-with-glew.cpp -o bin/a.out && bin/a.o
 #include <GL/glut.h>
 #include <GLFW/glfw3.h>
 ```
+
+***
 
 ### 03 - Vertex Buffers and Drawing a Triangle
 This lesson covers the extensive boilerplate required to render a triangle using modern OpenGL.
@@ -85,5 +87,12 @@ High level overview for **shaders**: vertex shaders determine position of vertic
 
 A **vertex** is not just a position; it can hold much more data: texture coordinates, normals, colors, binormals, etc.
 
+***
+
 ### 04 - Dealing with Shaders
 In  lesson 4 we separate our vertex and fragment shader code into files. While we're reusing the code from lesson 3, some of the extensive code comments have been removed.
+
+***
+
+### 05 - Index Buffers
+Index buffers (aka element buffers) allow reuse of vertices contained in vertex buffers, saving VRAM. Index buffers *must* contain of *unsigned* integers.
