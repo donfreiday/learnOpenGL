@@ -5,9 +5,39 @@
 #include <GLFW/glfw3.h>
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <sstream>
+
+// Compiler-specific macro to break execution on OpenGL errors.
+#ifdef _WIN32
+#define DEBUG_BREAK __debugbreak()
+#else
+#include <csignal>
+#define DEBUG_BREAK raise(SIGTRAP)
+#endif
+#define ASSERT(x) if (x) DEBUG_BREAK;
+
+// Wrap GL calls in this to check for errors
+#define GLCall(x) GLClearError();\
+  x;\
+  ASSERT(GLLogError());
+
+static void GLClearError() {
+  while (glGetError() != GL_NO_ERROR); // GL_NO_ERROR = 0, so could be while(!glGetError())
+}
+
+// Error codes can be found in glew.h
+static bool GLLogError() {
+  bool isError = false;
+  while (GLenum error = glGetError()) {
+    std::cout << "Error: OpenGL 0x" << std::setfill('0') << std::setw(4)
+              << std::hex << error << std::endl;
+    isError = true;
+  }
+  return isError;
+}
 
 struct ShaderProgramSource {
   std::string VertexSource;
@@ -61,7 +91,6 @@ static unsigned int CompileShader(unsigned int type, const std::string& source) 
      * with arguments shader and GL_COMPILE_STATUS. */
    glCompileShader(id);
 
-   
    /* void glGetShaderiv( // Returns a parameter from a shader object
     * GLuint shader,      // The shader object to be queried.
  	  * GLenum pname,       // Object parameter; GL_SHADER_TYPE, GL_DELETE_STATUS, GL_COMPILE_STATUS, GL_INFO_LOG_LENGTH, GL_SHADER_SOURCE_LENGTH.
@@ -74,9 +103,11 @@ static unsigned int CompileShader(unsigned int type, const std::string& source) 
      glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 
      // alloca dynamically allocates stack memory
-     char *message = (char*)alloca(length * sizeof(char)); 
+     char *message = (char *)alloca(length * sizeof(char));
      glGetShaderInfoLog(id, length, &length, message);
-     fprintf(stderr, "Error: %s shader compilation failed: %s\n", (type == GL_VERTEX_SHADER) ? "Vertex" : "Fragment", message);
+     std::cout << "Error: "
+               << ((type == GL_VERTEX_SHADER) ? "Vertex" : "Fragment")
+               << " shader compilation failed: " << message << std::endl;
      glDeleteShader(id);
      return 0;
    }
@@ -126,7 +157,7 @@ int main(int argc, char **argv) {
   glfwSetErrorCallback(error_callback);
 
   if (!glfwInit()) {
-    fprintf(stderr, "Error: Failed to initialize GLFW.\n");
+    std::cout << "Error: Failed to initialize GLFW.\n";
     return -1;
   }
   std::cout << "Status: Using GLFW version " << glfwGetVersionString() << std::endl;
@@ -197,12 +228,9 @@ int main(int argc, char **argv) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);  
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-  // Compile our shader sources into a shader program:
+  // Shaders
   ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
-  std::cout << source.VertexSource << std::endl << source.FragmentSource << std::endl;
   unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-
-  // Bind (select) our shader:
   glUseProgram(shader);
   
   while (!glfwWindowShouldClose(window)) {
@@ -212,7 +240,7 @@ int main(int argc, char **argv) {
 
     // Draw the current bound buffer
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-    glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr); // Example error
+    GLCall(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr)); // Example error
 
     /* Swap the front and the back buffers */
     glfwSwapBuffers(window);
