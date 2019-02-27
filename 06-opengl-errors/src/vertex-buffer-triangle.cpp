@@ -17,26 +17,26 @@
 #include <csignal>
 #define DEBUG_BREAK raise(SIGTRAP)
 #endif
-#define ASSERT(x) if (x) DEBUG_BREAK;
+#define ASSERT(x) if (!x) DEBUG_BREAK;
 
 // Wrap GL calls in this to check for errors
 #define GLCall(x) GLClearError();\
   x;\
-  ASSERT(GLLogError());
-
+  ASSERT(GLLogCall(#x, __FILE__, __LINE__)); // #x turns x into a string.
+  
 static void GLClearError() {
   while (glGetError() != GL_NO_ERROR); // GL_NO_ERROR = 0, so could be while(!glGetError())
 }
 
-// Error codes can be found in glew.h
-static bool GLLogError() {
-  bool isError = false;
+// Returns true for success, false on error
+static bool GLLogCall(const char* function, const char* file, int line) {
   while (GLenum error = glGetError()) {
     std::cout << "Error: OpenGL 0x" << std::setfill('0') << std::setw(4)
-              << std::hex << error << std::endl;
-    isError = true;
+              << std::hex << error << " " << function << " " << file << ":"
+              << line << std::endl;
+    return false;
   }
-  return isError;
+  return true;
 }
 
 struct ShaderProgramSource {
