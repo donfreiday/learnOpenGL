@@ -19,11 +19,12 @@
 #endif
 #define ASSERT(x) if (!x) DEBUG_BREAK;
 
+// This macro won't work for one line if statements, etc
 // Wrap GL calls in this to check for errors
 #define GLCall(x) GLClearError();\
   x;\
   ASSERT(GLLogCall(#x, __FILE__, __LINE__)); // #x turns x into a string.
-  
+
 static void GLClearError() {
   while (glGetError() != GL_NO_ERROR); // GL_NO_ERROR = 0, so could be while(!glGetError())
 }
@@ -31,9 +32,9 @@ static void GLClearError() {
 // Returns true for success, false on error
 static bool GLLogCall(const char* function, const char* file, int line) {
   while (GLenum error = glGetError()) {
-    std::cout << "Error: OpenGL 0x" << std::setfill('0') << std::setw(4)
-              << std::hex << error << " " << function << " " << file << ":"
-              << line << std::endl;
+    std::cout << "OpenGL Error 0x" << std::setfill('0') << std::setw(4)
+              << std::hex << error << " : " << std::dec << function << " in "
+              << file << ":" << line << std::endl;
     return false;
   }
   return true;
@@ -72,7 +73,7 @@ static ShaderProgramSource ParseShader(const std::string& filepath) {
 }
 
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
-    unsigned int id = glCreateShader(type);
+    GLCall(unsigned int id = glCreateShader(type));
     const char* src = source.c_str(); // equivalently &source[0]; source must not be out of scope!
 
     /* void glShaderSource(	  // Replaces the source code in a shader object
@@ -81,7 +82,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source) 
      * const GLchar **string, // double pointer, pointer to the actual pointer = memory address of src variable
      * const GLint *length);  // Specifies an array of string lengths. We want to use the whole length, so = nullptr
      */
-    glShaderSource(id, 1, &src, nullptr);
+    GLCall(glShaderSource(id, 1, &src, nullptr));
 
     /* glCompileShader compiles the source code strings that have been stored in
      * the shader object specified by shader.
@@ -89,7 +90,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source) 
      * value will be set to GL_TRUE if the shader was compiled without errors and is
      * ready for use, and GL_FALSE otherwise. It can be queried by calling glGetShader
      * with arguments shader and GL_COMPILE_STATUS. */
-   glCompileShader(id);
+   GLCall(glCompileShader(id));
 
    /* void glGetShaderiv( // Returns a parameter from a shader object
     * GLuint shader,      // The shader object to be queried.
@@ -97,18 +98,18 @@ static unsigned int CompileShader(unsigned int type, const std::string& source) 
  	  * GLint *params);     // Returns the requested object parameter.
     * iv is the types that the function needs: int and vector (array ie pointer) */
    int result;
-   glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+   GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
    if (result == GL_FALSE) {
      int length;
-     glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+     GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
 
      // alloca dynamically allocates stack memory
      char *message = (char *)alloca(length * sizeof(char));
-     glGetShaderInfoLog(id, length, &length, message);
+     GLCall(glGetShaderInfoLog(id, length, &length, message));
      std::cout << "Error: "
                << ((type == GL_VERTEX_SHADER) ? "Vertex" : "Fragment")
                << " shader compilation failed: " << message << std::endl;
-     glDeleteShader(id);
+     GLCall(glDeleteShader(id));
      return 0;
    }
 
@@ -116,15 +117,15 @@ static unsigned int CompileShader(unsigned int type, const std::string& source) 
 }
 
 static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
-    unsigned int program = glCreateProgram();
+    GLCall(unsigned int program = glCreateProgram());
     unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
     unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
     /* glAttachShader attaches a shader object to a program object. In order to
      * create a complete shader program, there must be a way to specify the list
      * of things that will be linked together. */
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
+    GLCall(glAttachShader(program, vs));
+    GLCall(glAttachShader(program, fs));
 
     /* glLinkProgram links the program object specified by program. If any
      * shader objects of type GL_VERTEX_SHADER are attached to program, they
@@ -134,16 +135,16 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
      * run on the programmable geometry processor. If any shader objects of type
      * GL_FRAGMENT_SHADER are attached to program, they will be used to create
      * an executable that will run on the programmable fragment processor. */
-    glLinkProgram(program);
+    GLCall(glLinkProgram(program));
 
     // Validation will be stored as part of the program state.
-    glValidateProgram(program);
+    GLCall(glValidateProgram(program));
 
     /* Delete intermediate shader files since they've now been linked into a
      * program. glDetachShader would delete the shader source code. This makes
      * debugging harder, though it technically should be done. */
-    glDeleteShader(vs);
-    glDeleteShader(fs);
+    GLCall(glDeleteShader(vs));
+    GLCall(glDeleteShader(fs));
 
     return program;
 }
@@ -188,7 +189,7 @@ int main(int argc, char **argv) {
   }
 
   std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
-  std::cout << "Status: Using OpenGL version " << glGetString(GL_VERSION) << std::endl;
+  GLCall(std::cout << "Status: Using OpenGL version " << glGetString(GL_VERSION) << std::endl);
 
   // These are the vertices of our triangle
   // x,y, x,y, x,y
@@ -206,11 +207,11 @@ int main(int argc, char **argv) {
   };
 
   unsigned int buffer;
-  glGenBuffers(1, &buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);  
-  glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+  GLCall(glGenBuffers(1, &buffer));
+  GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer)); 
+  GLCall(glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
-  glEnableVertexAttribArray(0);
+  GLCall(glEnableVertexAttribArray(0));
   // Once our buffer is bound, we can tell OpenGL about the attribute layout
   /* void glVertexAttribPointer(
    * GLuint index,            // index = 0, since it is the first attribute
@@ -220,23 +221,23 @@ int main(int argc, char **argv) {
    * GLsizei stride,          // byte offset between consecutive generic vertex attributes. sizeof(float*2)
    * const GLvoid * pointer); // First and only attribute so zero
    */
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0);
+  GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0));
 
   // Index buffer is generated, bound, and populated with data very similar to vertex buffer
   unsigned int ibo;
-  glGenBuffers(1, &ibo);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);  
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+  GLCall(glGenBuffers(1, &ibo));
+  GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo)); 
+  GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
   // Shaders
   ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
   unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-  glUseProgram(shader);
+  GLCall(glUseProgram(shader));
   
   while (!glfwWindowShouldClose(window)) {
     /* Clear buffers to preset values, in this case the buffers currently
      * enabled for color writing */
-    glClear(GL_COLOR_BUFFER_BIT);
+    GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
     // Draw the current bound buffer
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
@@ -251,7 +252,7 @@ int main(int argc, char **argv) {
   }
 
   // Clean up
-  glDeleteProgram(shader);
+  GLCall(glDeleteProgram(shader));
   glfwDestroyWindow(window);
   glfwTerminate();
 
@@ -259,7 +260,7 @@ int main(int argc, char **argv) {
 }
 
 void error_callback(int error, const char *description) {
-  fprintf(stderr, "Error: GLFW error: %s\n", description);
+  std::cout<< "Error: GLFW error: " << description << std::endl;
 }
 
 static void key_callback(GLFWwindow *window, int key, int scancode, int action,

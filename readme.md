@@ -96,3 +96,15 @@ In  lesson 4 we separate our vertex and fragment shader code into files. While w
 
 ### 05 - Index Buffers
 Index buffers (aka element buffers) allow reuse of vertices contained in vertex buffers, saving VRAM. Index buffers *must* contain of *unsigned* integers.
+
+***
+
+### 06 - OpenGL Errors
+There are two ways to get errors:
+
+In OpenGL 4.3, the function glMessageDebugCallback() was added. It provides much more information (driver dependant). Unfortunately this isn't compatible with older devices.
+
+glGetError() can retrieve flags (errorcode) set by errors. It must be called repeatedly to get all errors. This function has been in OpenGL since version 1.1, and it's the most common method for checking errors: poll for errors in a while loop to clear them, then call OpenGL function, then check for errors. This will be the focus of this lesson.
+
+We'll create a C++ macro, GLCall, which we can wrap around any OpenGL function calls to log errors, note file and line of code, and trigger a debug breakpoint. Cool!
+
