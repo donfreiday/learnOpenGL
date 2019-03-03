@@ -108,3 +108,9 @@ glGetError() can retrieve flags (errorcode) set by errors. It must be called rep
 
 We'll create a C++ macro, GLCall, which we can wrap around any OpenGL function calls to log errors, note file and line of code, and trigger a debug breakpoint. Cool!
 
+***
+
+### 07 - Uniforms
+
+Uniforms are a way to transfer data from the CPU to shaders. Another way to do this would be through vertex buffers. Uniforms are set per draw i.e. before draw call, whereas attributes in vertex buffers are set per vertex. In this lesson we use a uniform to send color data to our fragment shader and animate our rectangle color. Also introduced is vsync with glfwSwapInterval(1).
+
