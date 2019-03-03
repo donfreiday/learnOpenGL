@@ -114,3 +114,8 @@ We'll create a C++ macro, GLCall, which we can wrap around any OpenGL function c
 
 Uniforms are a way to transfer data from the CPU to shaders. Another way to do this would be through vertex buffers. Uniforms are set per draw i.e. before draw call, whereas attributes in vertex buffers are set per vertex. In this lesson we use a uniform to send color data to our fragment shader and animate our rectangle color. Also introduced is vsync with glfwSwapInterval(1).
 
+***
+
+### 08 - Vertex Arrays
+
+Vertex arrays allow us to bind vertex buffers with layout data. We were actually using the default VAO from the OpenGL compat profile in earlier lessons; now we will explicitly create one of our own.
