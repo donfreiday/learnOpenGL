@@ -81,7 +81,7 @@ The **Rendering pipeline** call order, simplified: Draw call ->  Vertex shaders 
 
 High level overview for **shaders**: vertex shaders determine position of vertices, fragment shaders determine the color of individual pixers.
 
-**Vertex shaders** are called once for each vertex, taking in all vertex attributes specified in our buffer. Shaders can receive data from the CPU (uniforms).
+**Vertex shaders** are called once for each vertex, taking in all vertex attributes specified in our buffer. shaders can receive data from the CPU (uniforms).
 
 **Fragment shaders** run once for each pixel which needs to be rasterized (drawn to screen) - rasterization is 'filling in' the triangles defined by our vertex shader. It's primary purpose is applying color. They run many more times than vertex shaders, they are 'more expensive' in terms of performance. Data can be passed from vertex shaders to fragment shaders.
 
@@ -89,7 +89,7 @@ A **vertex** is not just a position; it can hold much more data: texture coordin
 
 ***
 
-### 04 - Dealing with Shaders
+### 04 - Dealing with shaders
 In  lesson 4 we separate our vertex and fragment shader code into files. While we're reusing the code from lesson 3, some of the extensive code comments have been removed.
 
 ***
@@ -119,3 +119,9 @@ Uniforms are a way to transfer data from the CPU to shaders. Another way to do t
 ### 08 - Vertex Arrays
 
 Vertex arrays allow us to bind vertex buffers with layout data. We were actually using the default VAO from the OpenGL compat profile in earlier lessons; now we will explicitly create one of our own.
+
+***
+
+### 09 - Abstracting into Classes
+
+In this lesson we move our code into classes, starting with our macros, error checking, and vertex and index buffers.
