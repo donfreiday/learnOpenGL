@@ -124,4 +124,6 @@ Vertex arrays allow us to tie vertex buffers to layout data; vertex array object
 
 ### 09 - Abstracting into Classes
 
-In this lesson we abstract our code into classes to enable code reuse and clarity. We will also create a *renderer*; this will allow us to call something like Renderer.Draw(vb, ib, shader, states). We start with our macros, error checking, and vertex and index buffers. Then we move on to vertex arrays and finally shaders.
+In this lesson we abstract our code into classes to enable code reuse and clarity. We will also create a *renderer*; this will allow us to call something like Renderer.Draw(vb, ib, shader, states). 
+
+We start with our macros, error checking, and vertex and index buffers. Then we move on to vertex arrays and finally shaders. 

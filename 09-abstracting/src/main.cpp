@@ -180,7 +180,7 @@ int main(int argc, char **argv) {
   VertexBuffer vb(positions, 4 * 2 * sizeof(float));
 
   VertexBufferLayout layout;
-  layout.PushFloat(2);
+  layout.Push<float>(2);
   
   VertexArray va;
   va.AddBuffer(vb, layout);
