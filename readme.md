@@ -118,10 +118,10 @@ Uniforms are a way to transfer data from the CPU to shaders. Another way to do t
 
 ### 08 - Vertex Arrays
 
-Vertex arrays allow us to bind vertex buffers with layout data. We were actually using the default VAO from the OpenGL compat profile in earlier lessons; now we will explicitly create one of our own.
+Vertex arrays allow us to tie vertex buffers to layout data; vertex array objects (VAOs) are OpenGL's way of storing that state. We were actually using the default VAO from the OpenGL compat profile in earlier lessons; now we will explicitly create one of our own.
 
 ***
 
 ### 09 - Abstracting into Classes
 
-In this lesson we move our code into classes, starting with our macros, error checking, and vertex and index buffers.
+In this lesson we abstract our code into classes to enable code reuse and clarity. We will also create a *renderer*; this will allow us to call something like Renderer.Draw(vb, ib, shader, states). We start with our macros, error checking, and vertex and index buffers. Then we move on to vertex arrays and finally shaders.

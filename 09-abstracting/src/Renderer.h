@@ -19,6 +19,7 @@
   x;\
   ASSERT(GLLogCall(#x, __FILE__, __LINE__)); // #x turns x into a string.
 
+// Clear OpenGL errors
 void GLClearError(); 
 
 /******************************************************************************/

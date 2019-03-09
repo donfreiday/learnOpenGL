@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 
+// Clear OpenGL errors
 void GLClearError() {
   while (glGetError() != GL_NO_ERROR); // GL_NO_ERROR = 0, so could be while(!glGetError())
 }

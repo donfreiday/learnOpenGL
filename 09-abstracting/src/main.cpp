@@ -14,6 +14,7 @@
 
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
 
 /******************************************************************************/
 struct ShaderProgramSource {
@@ -176,36 +177,24 @@ int main(int argc, char **argv) {
     2, 3, 0
   };
 
-  /* Create a vertex array object, since the OpenGL core profile doesn't create
-   * one at index 0 by default like the OpenGL compat profile does. */
   unsigned int vao;
   GLCall(glGenVertexArrays(1, &vao));
   GLCall(glBindVertexArray(vao));
 
-  // Create vertex buffer and copy our vertices into it
   VertexBuffer vb(positions, 4 * 2 * sizeof(float));
-  
-  GLCall(glEnableVertexAttribArray(0));
-  // Once our buffer is bound, we can tell OpenGL about the attribute layout
-  /* void glVertexAttribPointer(
-   * GLuint index,            // index = 0, since it is the first attribute
-   * GLint size,              // How many components (floats) represent this vertex attribute = 2, since we have an x and y component
-   * GLenum type,             // GL_FLOAT since they are floats
-   * GLboolean normalized,    // False. If true, integer RGB values (0-255) will be converted by OpenGL to 0.0f - 1.0f format
-   * GLsizei stride,          // byte offset between consecutive generic vertex attributes. sizeof(float*2)
-   * const GLvoid * pointer); // First and only attribute so zero
-   */
-  GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*2, 0));
 
-  // Index buffer is generated, bound, and populated with data very similar to vertex buffer
+  VertexBufferLayout layout;
+  layout.PushFloat(2);
+  
+  VertexArray va;
+  va.AddBuffer(vb, layout);
+
   IndexBuffer ib(indices, 6);
 
-  // Shaders
   ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
   unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
   GLCall(glUseProgram(shader)); // Installs a program object as part of current rendering state
 
-  // Uniforms allow the CPU to send data to shaders on the GPU
   GLCall(int location = glGetUniformLocation(shader, "u_Color"));
   ASSERT(location != -1);
   GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
@@ -225,7 +214,7 @@ int main(int argc, char **argv) {
     GLCall(glUseProgram(shader));
     GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
 
-    GLCall(glBindVertexArray(vao));
+    va.Bind();
     ib.Bind();
 
     GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
