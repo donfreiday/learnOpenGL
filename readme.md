@@ -130,7 +130,7 @@ We start with our macros, error checking, and vertex and index buffers. Then we 
 
 ***
 
-### 10 - Textures
+### 10 - Textures and Blending
 
 A **texture** can be thought of as an image applied to a surface by a fragment (aka pixel) shader. Textures are bound by slot to allow binding more than one texture at once; a modern desktop OS might have 32 slots, whereas mobile might have 8 slots (depending on the GPU driver's OpenGL implementation). 
 
@@ -141,3 +141,25 @@ We will be using a PNG image to texture our rectangle:
 3) Bind texture at render time
 4) Shader binds to that texture slot
 5) Shader samples texture to apply it per pixel
+
+**Blending** determines how we combine our output color with what is already in our target buffer; this is how we handle texture transparency. Output color is output from fragment shader (aka source), and the target buffer is the buffer our fragment shader is drawing to (destination). Blending is disabled by default in OpenGL. There are three ways to control blending in OpenGL:
+
+1) glEnable(GL_BLEND) and glDisable(GL_BLEND).
+2) glBlendFunc("src RGBA factor, default: GL_ONE", "dest RGBA factor, default: GL_ZERO). This multiplies each RGBA channel in src and dest by the corresponding factor. The default glBlendFunc(src * GL_ONE, dest * GL_ZERO) overwrites dest with src.
+3) glBlendEquation(mode). mode is how we combine the src and dest colors, default is GL_FUNC_ADD; with default glBlendFunc this means 1 + 0 = 1
+
+In our code we've used   
+
+```CPP
+GLCall(glEnable(GL_BLEND));
+GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+```
+If the pixel we're rendering from our texture is transparent, we use the destination color already in the buffer:
+ * src alpha = 0
+ * dest = 1 - 0 = 1
+ * 
+This generalizes to 
+
+```CPP
+blended channel = (srcChannel * srcAlpha) + (destChannel * (1 - srcAlpha))
+```
