@@ -1,0 +1,12 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "g++",
+            "type": "shell",
+            "command": "g++ -g -lglfw -lGLEW -lGLU -lGL `find ${workspaceFolder}/10-textures/ -name *.cpp` -o ${workspaceFolder}/10-textures/bin/a.out && read -p \"Press Enter to continue\" < /dev/tty"
+        }
+    ]
+}
