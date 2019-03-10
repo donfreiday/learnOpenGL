@@ -6,7 +6,7 @@
         {
             "label": "g++",
             "type": "shell",
-            "command": "g++ -g -lglfw -lGLEW -lGLU -lGL `find ${workspaceFolder}/10-textures/ -name *.cpp` -o ${workspaceFolder}/10-textures/bin/a.out && read -p \"Press Enter to continue\" < /dev/tty"
+            "command": "g++ -g -lglfw -lGLEW -lGLU -lGL `find ${workspaceFolder}/11-math/ -name *.cpp` -o ${workspaceFolder}/11-math/bin/a.out && read -p \"Press Enter to continue\" < /dev/tty"
         }
     ]
 }
