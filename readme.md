@@ -163,3 +163,17 @@ This generalizes to
 ```CPP
 blended channel = (srcChannel * srcAlpha) + (destChannel * (1 - srcAlpha))
 ```
+
+*** 
+
+### 11 - Math
+
+Matrices and vectors are the two primary areas of math applicable to graphics programming. Matrices are arrays of data, which can be manipulated in various useful ways, for instance positioning in 3d space. There are two types of vectors in graphics programming, directional vectors and positional vectors.
+
+We'll be using the GLM OpenGL Mathematics library, [download here](https://github.com/g-truc/glm/releases) or (much easier):
+
+```yay -Syu glm``` and then ```#include <glm/glm.hpp>```
+
+A fundamental use is transformations, which is how we turn our vertex buffer into the points we see on our screen. We will correct the aspect ratio of the image texture we're rendering, which is neccessary because OpenGL provides a square projection matrix by default (-1.0f to 1.0f). 
+
+A **projection matrix** is a way to tell our window how we want to map our vertices to it. We need to take a mathematical representation of 3d geometry and transform it onto a 2d surface. We will use an **orthographic matrix** to map our vertex coordinates onto a 2D plane where objects that are further away don't get smaller. This is in contrast to a **perspective matrix** where objects that are further away are smaller, as in 3D rendering.
