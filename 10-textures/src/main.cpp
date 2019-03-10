@@ -16,6 +16,7 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "Texture.h"
 
 void error_callback(int error, const char *description);
 static void key_callback(GLFWwindow *window, int key, int scancode, int action,
@@ -54,22 +55,27 @@ int main(int argc, char **argv) {
 
   std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
   GLCall(std::cout << "Status: Using OpenGL version " << glGetString(GL_VERSION) << std::endl);
+
+  // Alpha transparency blending
+  GLCall(glEnable(GL_BLEND));
+  GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
   
   { /* Vertex and index buffers will go out of scope so their destructors are
      called before OpenGL context is lost, prevents infinite loop w/glGetError
    */
 
-  // Vertex buffer: x,y, x,y, x,y
+  // Vertex buffer: posX, posy, textureX, textureY
   float positions[] = {
-      -0.5f, -0.5f, // index 0
-       0.5f, -0.5f, // index 1
-       0.5f,  0.5f, // index 2
-      -0.5f,  0.5f, // index 3
+      -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
+       0.5f, -0.5f, 1.0f, 0.0f, // bottom right
+       0.5f,  0.5f, 1.0f, 1.0f, // top right
+      -0.5f,  0.5f, 0.0f, 1.0f  // top left
   };
-  VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+  VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
   VertexBufferLayout layout;
-  layout.Push<float>(2);
+  layout.Push<float>(2); // position
+  layout.Push<float>(2); // texture coordinates
 
   // Index buffer: each int refers the index of a vertice in a vertex buffer
   unsigned int indices[] = {
@@ -84,6 +90,12 @@ int main(int argc, char **argv) {
   Shader shader("res/shaders/Basic.shader");
   shader.Bind();
   shader.SetUniform4f("u_Color",0.2f, 0.3f, 0.8f, 1.0f);
+
+  Texture texture("res/textures/triforce.png");
+  texture.Bind();
+  
+  // Texture slot is passed to shader by integer uniform
+  shader.SetUniform1i("u_Texture", 0);
 
   va.Unbind();
   vb.Unbind();

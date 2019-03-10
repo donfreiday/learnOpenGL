@@ -132,4 +132,12 @@ We start with our macros, error checking, and vertex and index buffers. Then we 
 
 ### 10 - Textures
 
-A **texture** can be thought of as an image applied to a surface by a shader.
+A **texture** can be thought of as an image applied to a surface by a fragment (aka pixel) shader. Textures are bound by slot to allow binding more than one texture at once; a modern desktop OS might have 32 slots, whereas mobile might have 8 slots (depending on the GPU driver's OpenGL implementation). 
+
+We will be using a PNG image to texture our rectangle:
+
+1) Load PNG into CPU memory as an RGBA array using the [STB library](https://github.com/nothings/stb) in stb_image.h
+2) Create texture in OpenGL from RGBA array
+3) Bind texture at render time
+4) Shader binds to that texture slot
+5) Shader samples texture to apply it per pixel
