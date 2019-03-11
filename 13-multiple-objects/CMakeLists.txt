@@ -11,6 +11,8 @@ find_package(GLEW REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
 include_directories("src/vendor")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 add_executable (${NAME} src/Renderer.cpp
 src/IndexBuffer.cpp
 src/VertexBuffer.cpp
@@ -27,5 +29,3 @@ src/Texture.cpp
 src/main.cpp)
 
 target_link_libraries(${NAME} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
