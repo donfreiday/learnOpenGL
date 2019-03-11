@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "preLaunchTask": "g++",
-            "program": "${workspaceFolder}/11-math/bin/a.out",
+            "program": "${workspaceFolder}/12-imgui/bin/a.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/11-math/",

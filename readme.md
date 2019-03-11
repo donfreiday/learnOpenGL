@@ -188,3 +188,8 @@ The **view matrix**, aka "eye matrix", can be thought of as the view of the "cam
 
 The **model matrix** is the transform of our model or object. Transform means translation, rotation and scale (TRS).
  
+ ***
+
+ ### 12 - ImGui
+
+ [ImGui](https://github.com/ocornut/imgui/releases) is a GUI library that is API agnostic, which is very useful for debugging. 
