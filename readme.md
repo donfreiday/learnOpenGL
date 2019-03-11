@@ -193,3 +193,9 @@ The **model matrix** is the transform of our model or object. Transform means tr
  ### 12 - ImGui
 
  [ImGui](https://github.com/ocornut/imgui/releases) is a GUI library that is API agnostic, which is very useful for debugging. 
+
+ ***
+
+ ### 13 - Rendering Multiple Objects
+
+ 
