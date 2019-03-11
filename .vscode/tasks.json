@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "g++",
+            "label": "make",
             "type": "shell",
-            "command": "g++ -g -I${workspaceFolder}/12-imgui/src/vendor -lglfw -lGLEW -lGLU -lGL `find ${workspaceFolder}/12-imgui/ -name *.cpp` -o ${workspaceFolder}/12-imgui/bin/a.out && read -p \"Press Enter to continue\" < /dev/tty"
+            "command": "cd ${workspaceFolder}/13-multiple-objects && make"
         }
     ]
 }
