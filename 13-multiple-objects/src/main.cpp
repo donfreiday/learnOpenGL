@@ -40,7 +40,8 @@ int main(int argc, char **argv) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow *window = glfwCreateWindow(960, 540, "Learn OpenGL", NULL, NULL);
+  int windowX = 960, windowY = 540;
+  GLFWwindow *window = glfwCreateWindow(windowX, windowY, "Learn OpenGL", NULL, NULL);
   if (!window) {
     std::cout << "Error: Failed to create Window or OpenGL context.\n";
     glfwTerminate();
@@ -119,6 +120,12 @@ int main(int argc, char **argv) {
   glm::vec3 translationA(50, 50, 0);
   glm::vec3 translationB(600, 50, 0);
 
+  int directionAx = 1;
+  int directionAy = 1;
+  int directionBx = 1;
+  int directionBy = 1;
+  int speedA[2] = {1, 1};
+  int speedB[2] = {1, 1};
   while (!glfwWindowShouldClose(window)) {
     renderer.Clear();
 
@@ -132,7 +139,9 @@ int main(int argc, char **argv) {
 
       ImGui::Begin("Model translation");
       ImGui::SliderFloat3("TranslationA", &translationA.x, 0.0f, 960.0f); 
-      ImGui::SliderFloat3("TranslationB", &translationB.x, 0.0f, 960.0f); 
+      ImGui::SliderFloat3("TranslationB", &translationB.x, 0.0f, 960.0f);
+      ImGui::SliderInt2("SpeedA", &speedA[0], -20, 20); 
+      ImGui::SliderInt2("SpeedB", &speedB[0], -20, 20); 
       ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
                   1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
       ImGui::End();
@@ -141,17 +150,29 @@ int main(int argc, char **argv) {
     shader.Bind();
 
     {
+      if(translationA.x >= windowX || translationA.x <= 0)
+        directionAx *= -1;
+      if(translationA.y >= windowY || translationA.y <= 0)
+        directionAy *= -1;
+      translationA.x += directionAx * speedA[0];
+      translationA.y += directionAy * speedA[1];
       glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
       glm::mat4 mvp = proj * view * model;
       shader.SetUniformMat4f("u_MVP", mvp);
       renderer.Draw(va, ib, shader);
     }
     {
+      if (translationB.x >= windowX || translationB.x <= 0)
+        directionBx *= -1;
+      if (translationB.y >= windowY || translationB.y <= 0)
+        directionBy *= -1;
+      translationB.x += directionBx * speedB[0];
+      translationB.y += directionBy * speedB[1];
       glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
       glm::mat4 mvp = proj * view * model;
       shader.SetUniformMat4f("u_MVP", mvp);
       renderer.Draw(va, ib, shader);
-    }
+    }    
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
