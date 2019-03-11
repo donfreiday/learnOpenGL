@@ -104,15 +104,8 @@ int main(int argc, char **argv) {
   // Move camera to the right by translating the scene to the left
   glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 0.0f, 0.0f));
   
-  // Move the model up and right
-  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
-  
-  // Combine MVP (Model, View, and Projection) matrices
-  glm::mat4 mvp = proj * view * model;
-  
   Shader shader("res/shaders/Basic.shader");
   shader.Bind();
-  shader.SetUniformMat4f("u_MVP", mvp);
 
   Texture texture("res/textures/bowser.png");
   texture.Bind();
@@ -133,9 +126,7 @@ int main(int argc, char **argv) {
   const char* glsl_version = "#version 130";
   ImGui_ImplOpenGL3_Init(glsl_version);
 
-  // For animating color
-  float r = 0.0f;
-  float increment = 0.05f;
+  glm::vec3 translation(200, 200, 0);
 
   while (!glfwWindowShouldClose(window)) {
     renderer.Clear();
@@ -144,17 +135,24 @@ int main(int argc, char **argv) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    
-    bool show_demo_window = true;
-    ImGui::ShowDemoWindow(&show_demo_window);
+    {
+      static float f = 0.0f;
+      static int counter = 0;
+
+      ImGui::Begin("Debug"); // Create a window called "Debug" and append into it.
+      ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f); // Edit 3 floats using a slider from 0.0f to 1.0f
+      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                  1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+      ImGui::End();
+    }
+
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+    glm::mat4 mvp = proj * view * model;
+
+    shader.Bind();
+    shader.SetUniformMat4f("u_MVP", mvp);
 
     renderer.Draw(va, ib, shader);
-
-    if (r > 1.0f)
-      increment = -0.05f;
-    else if (r < 0.0f)
-      increment = 0.05f;
-    r += increment;
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
