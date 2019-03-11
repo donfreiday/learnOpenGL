@@ -174,6 +174,17 @@ We'll be using the GLM OpenGL Mathematics library, [download here](https://githu
 
 ```yay -Syu glm``` and then ```#include <glm/glm.hpp>```
 
-A fundamental use is transformations, which is how we turn our vertex buffer into the points we see on our screen. We will correct the aspect ratio of the image texture we're rendering, which is neccessary because OpenGL provides a square projection matrix by default (-1.0f to 1.0f). 
+A fundamental use is transformations, which is how we turn our vertex buffer into the points we see on our screen. The transformation pipeline takes our vertice data and multiplies it by a series of matrices, projection -> view -> model, each of which is discussed below.
 
-A **projection matrix** is a way to tell our window how we want to map our vertices to it. We need to take a mathematical representation of 3d geometry and transform it onto a 2d surface. We will use an **orthographic matrix** to map our vertex coordinates onto a 2D plane where objects that are further away don't get smaller. This is in contrast to a **perspective matrix** where objects that are further away are smaller, as in 3D rendering.
+A **MVP** is a **model view projection matrix**, where each letter stands for a matrix: Model, View, Projection.  These matrices are multiplied together, and this product is then multiplied by our vertex position data to calculate the final positions in normalized device coordinates. In OpenGL the order of multiplication is reversed (PVM) as it uses column major ordering.
+
+The **projection matrix** is multiplied by our vertex coordinates to convert them into normalized device coordinates (between -1.0f and 1.0f on each axis x, y, z) that we can then map to our window. This multiplication will be performed in our vertex shader. Vertices outside the normalized range will be **culled**, or not rendered, because they are outside our view or **frustrum**. 
+
+An **orthographic projection matrix** can be used to map our vertex coordinates onto a 2D plane without perspective, in which objects don't appear smaller when further away.
+
+A **perspective projection matrix** is used when rendering 3D scenes in which more distant objects are smaller. Positions are still converted into normalized device coordinates, but vertices with a higher z value will be closer to the middle of the camera, making them smaller.
+
+The **view matrix**, aka "eye matrix", can be thought of as the view of the "camera". There isn't actually a camera in OpenGL; we simulate a camera by transforming the geometry (vertices) of our models, i.e. to simulate a camera moving left, we translate our model to the right.
+
+The **model matrix** is the transform of our model or object. Transform means translation, rotation and scale (TRS).
+ 

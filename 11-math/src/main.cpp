@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow *window = glfwCreateWindow(640, 480, "Modern OpenGL with GLEW", NULL, NULL);
+  GLFWwindow *window = glfwCreateWindow(960, 540, "Learn OpenGL", NULL, NULL);
   if (!window) {
     std::cout << "Error: Failed to create Window or OpenGL context.\n";
     glfwTerminate();
@@ -69,10 +69,10 @@ int main(int argc, char **argv) {
 
   // Vertex buffer: posX, posy, textureX, textureY
   float positions[] = {
-      -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
-       0.5f, -0.5f, 1.0f, 0.0f, // bottom right
-       0.5f,  0.5f, 1.0f, 1.0f, // top right
-      -0.5f,  0.5f, 0.0f, 1.0f  // top left
+       100.0f,  100.0f, 0.0f, 0.0f, // bottom left
+       200.0f,  100.0f, 1.0f, 0.0f, // bottom right
+       200.0f,  200.0f, 1.0f, 1.0f, // top right
+       100.0f,  200.0f, 0.0f, 1.0f  // top left
   };
   VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
@@ -95,12 +95,21 @@ int main(int argc, char **argv) {
      they specify the boundaries of our window.
      Near and far aren't strictly necessary for our purposes.
   */
-  glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+  glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
+
+  // Move camera to the right by translating the scene to the left
+  glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 0.0f, 0.0f));
+  
+  // Move the model up and right
+  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
+  
+  // Combine MVP (Model, View, and Projection) matrices
+  glm::mat4 mvp = proj * view * model;
   
   Shader shader("res/shaders/Basic.shader");
   shader.Bind();
   shader.SetUniform4f("u_Color",0.2f, 0.3f, 0.8f, 1.0f);
-  shader.SetUniformMat4f("u_MVP", proj);
+  shader.SetUniformMat4f("u_MVP", mvp);
 
   Texture texture("res/textures/bowser.png");
   texture.Bind();
