@@ -198,4 +198,12 @@ The **model matrix** is the transform of our model or object. Transform means tr
 
  ### 13 - Rendering Multiple Objects
 
+ Well, the same object twice under different translations. See code.
+
+ ***
+
+ ### 14 - Test Framework
+
+ See code
+
  
