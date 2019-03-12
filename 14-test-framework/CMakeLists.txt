@@ -14,9 +14,12 @@ include_directories("src/vendor")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+set(CMAKE_CXX_FLAGS "-g") 
+
 add_executable (${NAME} src/Renderer.cpp
 src/tests/Test.cpp
 src/tests/TestClearColor.cpp
+src/tests/TestTexture2D.cpp
 src/IndexBuffer.cpp
 src/VertexBuffer.cpp
 src/VertexArray.cpp

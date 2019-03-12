@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <vector>
 
-#include "Renderer.h"
+//#include "Renderer.h"
 
 struct VertexBufferElement {
   unsigned int type;
@@ -21,7 +21,7 @@ struct VertexBufferElement {
     case GL_UNSIGNED_BYTE:
       return 1;
     }
-    ASSERT(false);
+    //TODO: ASSERT(false);
     return 0;
   }
 };
@@ -41,7 +41,7 @@ public:
   template<typename T> 
   void Push(unsigned int count) {
     std::cout << "Error: unsupported type " << typeid(T).name() << std::endl;
-    DEBUG_BREAK;
+    //TODO: DEBUG_BREAK;
   }
 
   inline const std::vector<VertexBufferElement> &GetElements() const {

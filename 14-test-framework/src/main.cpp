@@ -25,6 +25,7 @@
 
 #include "tests/Test.h"
 #include "tests/TestClearColor.h"
+#include "tests/TestTexture2D.h"
 
 void error_callback(int error, const char *description);
 static void key_callback(GLFWwindow *window, int key, int scancode, int action,
@@ -84,6 +85,7 @@ int main(int argc, char **argv) {
   currentTest = testMenu;
 
   testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+  testMenu->RegisterTest<test::TestTexture2D>("Texture 2D");
 
   while (!glfwWindowShouldClose(window)) {
     GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
